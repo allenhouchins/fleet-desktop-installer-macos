@@ -1,5 +1,4 @@
-# fleet-desktop-installer-macos
-Fleet Desktop Installer for macOS
+# Fleet Desktop Installer for macOS
 
 This package will install and enable Fleet Desktop on your macOS devices that have already installed the Fleet Agent but without Fleet Desktop included. This package assumes you have already deployed the Fleet Agent without the "--fleet-desktop" flag present during initial package creation. You can choose to build this package yourself by creating a Fleet package with the --fleet-desktop flag included (ex:`fleetctl package --type=pkg --enable-scripts --fleet-desktop --fleet-url=https://yourfleeturl.com --enroll-secret=yourenrollmentsecret`), installing that package, copying the contents of /opt/orbit/bin/desktop, and deploying it alongside the preinstall and postinstall scripts found in this repo. 
 
