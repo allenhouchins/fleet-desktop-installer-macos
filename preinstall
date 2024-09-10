@@ -1,0 +1,19 @@
+#!/bin/sh
+## preinstall
+
+# Path to Fleet Agent plist
+FILE="/Library/LaunchDaemons/com.fleetdm.orbit.plist"
+
+# Check if Fleet Agent is installed
+if [ ! -f "$FILE" ]; then
+    echo "Fleet Agent is not installed."
+    exit 1
+else
+    echo "Fleet Agent is installed. Continuing..."
+# Stop the Fleet agent in preparation of install
+/bin/launchctl unload /Library/LaunchDaemons/com.fleetdm.orbit.plist
+fi
+
+
+exit 0		## Success
+exit 1		## Failure
