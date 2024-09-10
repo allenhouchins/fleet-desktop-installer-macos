@@ -1,13 +1,13 @@
 #!/bin/sh
 ## postinstall
 
-# Add Orbit Desktop Channel to Fleet agent plist
+# Add Orbit Desktop Channel to Fleet Agent plist
 /usr/bin/plutil -insert EnvironmentVariables.ORBIT_DESKTOP_CHANNEL -string "stable" /Library/LaunchDaemons/com.fleetdm.orbit.plist
 
-# Enable Fleet Destop via Fleet agent plist
+# Enable Fleet Destop via Fleet Agent plist
 /usr/bin/plutil -insert EnvironmentVariables.ORBIT_FLEET_DESKTOP -string "true" /Library/LaunchDaemons/com.fleetdm.orbit.plist
 
-# Start the Fleet agent
+# Start the Fleet Agent
 /bin/launchctl load /Library/LaunchDaemons/com.fleetdm.orbit.plist  
 
 exit 0		## Success
