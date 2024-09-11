@@ -1,27 +1,9 @@
 #!/bin/sh
 
-# Path to Fleet Agent plist
-fleetagentplist="/Library/LaunchDaemons/com.fleetdm.orbit.plist"
-# Path to Fleet Agent Reloader script
-fleetreloadscript="/private/tmp/fleetreloader.sh"
-# Path to Fleet Agent Reloader plist
-fleetreloaddaemon="/private/tmp/com.fleetdm.reload.plist"
-
-# Check if Fleet Agent is installed
-if [ ! -f "$fleetagentplist" ]; then
-    echo "Fleet Agent is not installed."
-    exit 1
-else
-    echo "Fleet Agent is installed. Continuing..."
-fi
-
-# Add Orbit Desktop Channel to Fleet Agent plist
-/usr/bin/plutil -insert EnvironmentVariables.ORBIT_DESKTOP_CHANNEL -string "stable" /Library/LaunchDaemons/com.fleetdm.orbit.plist
-
-# Enable Fleet Destop via Fleet Agent plist
-/usr/bin/plutil -insert EnvironmentVariables.ORBIT_FLEET_DESKTOP -string "true" /Library/LaunchDaemons/com.fleetdm.orbit.plist
-
-# Create the Fleet Agent Reloader Script
+# Fleet Reloader function that can be used across other scripts that require the Fleet Agent to restart in order to pick up changes
+fleet_reloader()
+{
+   # Create the Fleet Agent Reloader Script
 /bin/cat << 'EOF' > "$fleetreloadscript"
 #!/bin/sh
 /bin/launchctl unload /Library/LaunchDaemons/com.fleetdm.orbit.plist
@@ -69,6 +51,31 @@ EOF
 /bin/launchctl load "$fleetreloaddaemon"; /bin/sleep 5
 
 # Unload Fleet Agent Reloader daemon
-/bin/launchctl unload "$fleetreloaddaemon"
+/bin/launchctl unload "$fleetreloaddaemon" 
+}
+
+
+# Path to Fleet Agent plist
+fleetagentplist="/Library/LaunchDaemons/com.fleetdm.orbit.plist"
+# Path to Fleet Agent Reloader script
+fleetreloadscript="/private/tmp/fleetreloader.sh"
+# Path to Fleet Agent Reloader plist
+fleetreloaddaemon="/private/tmp/com.fleetdm.reload.plist"
+
+# Check if Fleet Agent is installed
+if [ ! -f "$fleetagentplist" ]; then
+    echo "Fleet Agent is not installed."
+    exit 1
+else
+    echo "Fleet Agent is installed. Continuing..."
+fi
+
+# Add Orbit Desktop Channel to Fleet Agent plist
+/usr/bin/plutil -insert EnvironmentVariables.ORBIT_DESKTOP_CHANNEL -string "stable" /Library/LaunchDaemons/com.fleetdm.orbit.plist
+
+# Enable Fleet Destop via Fleet Agent plist
+/usr/bin/plutil -insert EnvironmentVariables.ORBIT_FLEET_DESKTOP -string "true" /Library/LaunchDaemons/com.fleetdm.orbit.plist
+
+fleet_reloader
 
 exit 0
