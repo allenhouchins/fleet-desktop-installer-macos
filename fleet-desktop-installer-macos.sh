@@ -1,6 +1,7 @@
 #!/bin/sh
 
-# Fleet Reloader function that can be used across other scripts that require the Fleet Agent to restart in order to pick up changes
+# Fleet Reloader function that can be used across other scripts that 
+# require the Fleet Agent to restart in order to pick up changes
 fleet_reloader()
 {
    # Create the Fleet Agent Reloader Script
@@ -76,7 +77,7 @@ fi
 # Enable Fleet Destop via Fleet Agent plist
 /usr/bin/plutil -insert EnvironmentVariables.ORBIT_FLEET_DESKTOP -string "true" /Library/LaunchDaemons/com.fleetdm.orbit.plist
 
-# Call function
+# Call Reloader function
 fleet_reloader
 
 exit 0
