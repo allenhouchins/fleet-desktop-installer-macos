@@ -7,8 +7,11 @@ fleet_reloader()
    # Create the Fleet Agent Reloader Script
 /bin/cat << 'EOF' > "$fleetreloadscript"
 #!/bin/sh
+/bin/sleep 15
 /bin/launchctl unload /Library/LaunchDaemons/com.fleetdm.orbit.plist
 /bin/launchctl load /Library/LaunchDaemons/com.fleetdm.orbit.plist
+# Unload Fleet Agent Reloader daemon
+/bin/launchctl unload "${fleetreloaddaemon}" 
 EOF
 
 # Make script executable
@@ -48,11 +51,8 @@ EOF
 # Change ownership of plist (is this needed?)
 /usr/sbin/chown root:admin "$fleetreloaddaemon"
 
-# Load Fleet Agent Reloader plist and wait 5 seconds
-/bin/launchctl load "$fleetreloaddaemon"; /bin/sleep 5
-
-# Unload Fleet Agent Reloader daemon
-/bin/launchctl unload "$fleetreloaddaemon" 
+# Load Fleet Agent Reloader plist
+/bin/launchctl load "$fleetreloaddaemon"; 
 }
 
 ### Start script ###
@@ -78,6 +78,6 @@ fi
 /usr/bin/plutil -insert EnvironmentVariables.ORBIT_FLEET_DESKTOP -string "true" /Library/LaunchDaemons/com.fleetdm.orbit.plist
 
 # Call Reloader function
-fleet_reloader
+fleet_reloader &
 
 exit 0
