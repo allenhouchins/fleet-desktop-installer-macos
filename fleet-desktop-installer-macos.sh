@@ -24,8 +24,8 @@ fi
 # Create the Fleet Agent Reloader Script
 /bin/cat << 'EOF' > "$fleetreloadscript"
 #!/bin/sh
-/bin/launchctl bootout system /Library/LaunchDaemons/com.fleetdm.orbit.plist
-/bin/launchctl bootstrap system /Library/LaunchDaemons/com.fleetdm.orbit.plist
+/bin/launchctl unload /Library/LaunchDaemons/com.fleetdm.orbit.plist
+/bin/launchctl load /Library/LaunchDaemons/com.fleetdm.orbit.plist
 EOF
 
 # Make script executable
@@ -66,9 +66,9 @@ EOF
 /usr/sbin/chown root:admin "$fleetreloaddaemon"
 
 # Load Fleet Agent Reloader plist and wait 5 seconds
-/bin/launchctl bootstrap system "$fleetreloaddaemon"; /bin/sleep 5
+/bin/launchctl load "$fleetreloaddaemon"; /bin/sleep 5
 
 # Unload Fleet Agent Reloader daemon
-/bin/launchctl bootout system "$fleetreloaddaemon"
+/bin/launchctl unload "$fleetreloaddaemon"
 
 exit 0
