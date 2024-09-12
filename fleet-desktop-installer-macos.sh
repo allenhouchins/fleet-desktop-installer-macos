@@ -15,10 +15,7 @@ fleet_reloader()
 EOF
 
 # Make script executable
-/bin/chmod 755 "$fleetreloadscript"
-
-# Change ownership of script (is this needed?)
-/usr/sbin/chown root:admin "$fleetreloadscript"
+/bin/chmod 744 "$fleetreloadscript"
 
 # Create the Fleet Agent Reloader daemon
 /bin/cat << 'EOF' > "$fleetreloaddaemon"
@@ -35,8 +32,6 @@ EOF
         </array>
         <key>RunAtLoad</key>
         <true/>
-        <key>AbandonProcessGroup</key>
-        <true/>
         <key>StandardErrorPath</key>
         <string>/dev/null</string>
         <key>StandardOutPath</key>
@@ -46,10 +41,7 @@ EOF
 EOF
 
 # Make plist executable
-/bin/chmod 755 "$fleetreloaddaemon"
-
-# Change ownership of plist (is this needed?)
-/usr/sbin/chown root:admin "$fleetreloaddaemon"
+/bin/chmod 744 "$fleetreloaddaemon"
 
 # Load Fleet Agent Reloader plist
 /bin/launchctl load "$fleetreloaddaemon"; 
@@ -72,12 +64,12 @@ else
 fi
 
 # Add Orbit Desktop Channel to Fleet Agent plist
-/usr/bin/plutil -insert EnvironmentVariables.ORBIT_DESKTOP_CHANNEL -string "stable" /Library/LaunchDaemons/com.fleetdm.orbit.plist
+/usr/bin/plutil -replace EnvironmentVariables.ORBIT_DESKTOP_CHANNEL -string "stable" /Library/LaunchDaemons/com.fleetdm.orbit.plist
 
 # Enable Fleet Destop via Fleet Agent plist
-/usr/bin/plutil -insert EnvironmentVariables.ORBIT_FLEET_DESKTOP -string "true" /Library/LaunchDaemons/com.fleetdm.orbit.plist
+/usr/bin/plutil -replace EnvironmentVariables.ORBIT_FLEET_DESKTOP -string "true" /Library/LaunchDaemons/com.fleetdm.orbit.plist
 
 # Call Reloader function
-fleet_reloader &
+fleet_reloader
 
 exit 0
