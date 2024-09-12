@@ -5,20 +5,20 @@
 fleet_reloader()
 {
    # Create the Fleet Agent Reloader Script
-/bin/cat << 'EOF' > "$fleetreloadscript"
+/bin/cat << 'EOF' > "/private/tmp/fleetreloader.sh"
 #!/bin/sh
 /bin/sleep 15
 /bin/launchctl unload /Library/LaunchDaemons/com.fleetdm.orbit.plist
 /bin/launchctl load /Library/LaunchDaemons/com.fleetdm.orbit.plist
 # Unload Fleet Agent Reloader daemon
-/bin/launchctl unload "${fleetreloaddaemon}" 
+/bin/launchctl unload "/private/tmp/com.fleetdm.reload.plist" 
 EOF
 
 # Make script executable
-/bin/chmod 744 "$fleetreloadscript"
+/bin/chmod 744 "/private/tmp/fleetreloader.sh"
 
 # Create the Fleet Agent Reloader daemon
-/bin/cat << 'EOF' > "$fleetreloaddaemon"
+/bin/cat << 'EOF' > "/private/tmp/com.fleetdm.reload.plist"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -41,22 +41,15 @@ EOF
 EOF
 
 # Make plist executable
-/bin/chmod 744 "$fleetreloaddaemon"
+/bin/chmod 744 "/private/tmp/com.fleetdm.reload.plist"
 
 # Load Fleet Agent Reloader plist
-/bin/launchctl load "$fleetreloaddaemon"; 
+/bin/launchctl load "/private/tmp/com.fleetdm.reload.plist"; 
 }
 
 ### Start script ###
-# Path to Fleet Agent plist
-fleetagentplist="/Library/LaunchDaemons/com.fleetdm.orbit.plist"
-# Path to Fleet Agent Reloader script
-fleetreloadscript="/private/tmp/fleetreloader.sh"
-# Path to Fleet Agent Reloader plist
-fleetreloaddaemon="/private/tmp/com.fleetdm.reload.plist"
-
 # Check if Fleet Agent is installed
-if [ ! -f "$fleetagentplist" ]; then
+if [ ! -f "/Library/LaunchDaemons/com.fleetdm.orbit.plist" ]; then
     echo "Fleet Agent is not installed."
     exit 1
 else
