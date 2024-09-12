@@ -15,7 +15,7 @@ fleet_reloader()
 EOF
 
 # Make script executable
-/bin/chmod 744 "/private/tmp/fleetreloader.sh"
+/bin/chmod +x "/private/tmp/fleetreloader.sh"
 
 # Create the Fleet Agent Reloader daemon
 /bin/cat << 'EOF' > "/private/tmp/com.fleetdm.reload.plist"
@@ -39,9 +39,6 @@ EOF
     </dict>
 </plist>
 EOF
-
-# Make plist executable
-/bin/chmod 744 "/private/tmp/com.fleetdm.reload.plist"
 
 # Load Fleet Agent Reloader plist
 /bin/launchctl load "/private/tmp/com.fleetdm.reload.plist"; 
