@@ -4,18 +4,36 @@
 # require the Fleet Agent to restart in order to pick up changes
 fleet_reloader()
 {
-   # Create the Fleet Agent Reloader Script
+# Create the files we're going to use and set their permissions and check to
+# ensure existing, potentially malicious code isn't already at these paths
+
+if [ - e "/private/tmp/fleetreloader.sh" ]; then
+    echo "fleetreloader.sh already exists. Deleting it before continuing..."
+    /bin/rm "/private/tmp/fleetreloader.sh"
+else
+    /usr/bin/touch /private/tmp/fleetreloader.sh
+    /bin/chmod 744 /private/tmp/fleetreloader.sh
+     echo "Created fleetreloader script"
+fi
+
+if [ - e "/private/tmp/com.fleetdm.reload.plist" ]; then
+    echo "fleetreloader LaunchDaemon already exists. Deleting it before continuing..."
+    /bin/rm "/private/tmp/com.fleetdm.reload.plist"
+else
+    /usr/bin/touch /private/tmp/com.fleetdm.reload.plist
+    /bin/chmod 644 /private/tmp/com.fleetdm.reload.plist
+    echo "Created fleetreloader LaunchDaemon"
+fi
+
+
+# Create the Fleet Agent Reloader Script
 /bin/cat << 'EOF' > "/private/tmp/fleetreloader.sh"
 #!/bin/sh
 /bin/sleep 15
-/bin/launchctl unload /Library/LaunchDaemons/com.fleetdm.orbit.plist
-/bin/launchctl load /Library/LaunchDaemons/com.fleetdm.orbit.plist
-# Unload Fleet Agent Reloader daemon
-/bin/launchctl unload "/private/tmp/com.fleetdm.reload.plist" 
+/bin/launchctl bootout system /Library/LaunchDaemons/com.fleetdm.orbit.plist
+/bin/launchctl bootstrap system /Library/LaunchDaemons/com.fleetdm.orbit.plist
+/bin/launchctl bootout system "/private/tmp/com.fleetdm.reload.plist" 
 EOF
-
-# Make script executable
-/bin/chmod +x "/private/tmp/fleetreloader.sh"
 
 # Create the Fleet Agent Reloader daemon
 /bin/cat << 'EOF' > "/private/tmp/com.fleetdm.reload.plist"
@@ -41,7 +59,7 @@ EOF
 EOF
 
 # Load Fleet Agent Reloader plist
-/bin/launchctl load "/private/tmp/com.fleetdm.reload.plist"; 
+/bin/launchctl bootstrap system "/private/tmp/com.fleetdm.reload.plist"; 
 }
 
 ### Start script ###
@@ -58,6 +76,8 @@ fi
 
 # Enable Fleet Destop via Fleet Agent plist
 /usr/bin/plutil -replace EnvironmentVariables.ORBIT_FLEET_DESKTOP -string "true" /Library/LaunchDaemons/com.fleetdm.orbit.plist
+
+echo "Fleet Desktop has been enabled. Please allow up to a minute for it to download and open on the device."
 
 # Call Reloader function
 fleet_reloader
