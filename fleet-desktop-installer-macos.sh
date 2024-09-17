@@ -77,9 +77,9 @@ fi
 # Enable Fleet Destop via Fleet Agent plist
 /usr/bin/plutil -replace EnvironmentVariables.ORBIT_FLEET_DESKTOP -string "true" /Library/LaunchDaemons/com.fleetdm.orbit.plist
 
-echo "Fleet Desktop has been enabled. Please allow up to a minute for it to download and open on the device."
-
 # Call Reloader function
 fleet_reloader
+
+echo "Fleet Desktop has been enabled. Please allow up to a minute for it to download and open on the device."
 
 exit 0
