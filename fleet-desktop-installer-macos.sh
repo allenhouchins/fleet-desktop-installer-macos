@@ -4,7 +4,7 @@
 # require the Fleet Agent to restart in order to pick up changes
 fleet_reloader()
 {
-# Create the files we're going to use and set their permissions and check to
+# Create the files we're going to use, set their permissions, and check to
 # ensure existing, potentially malicious code isn't already at these paths
 
 if [ -e "/private/tmp/fleetreloader.sh" ]; then
