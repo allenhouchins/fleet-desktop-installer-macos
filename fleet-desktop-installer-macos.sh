@@ -7,7 +7,7 @@ fleet_reloader()
 # Create the files we're going to use and set their permissions and check to
 # ensure existing, potentially malicious code isn't already at these paths
 
-if [ - e "/private/tmp/fleetreloader.sh" ]; then
+if [ -e "/private/tmp/fleetreloader.sh" ]; then
     echo "fleetreloader.sh already exists. Deleting it before continuing..."
     /bin/rm "/private/tmp/fleetreloader.sh"
 else
@@ -16,7 +16,7 @@ else
      echo "Created fleetreloader script"
 fi
 
-if [ - e "/private/tmp/com.fleetdm.reload.plist" ]; then
+if [ -e "/private/tmp/com.fleetdm.reload.plist" ]; then
     echo "fleetreloader LaunchDaemon already exists. Deleting it before continuing..."
     /bin/rm "/private/tmp/com.fleetdm.reload.plist"
 else
